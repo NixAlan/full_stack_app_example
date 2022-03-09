@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "@reach/router";
+import Header from "./Header";
+import DeleteButton from "./DeleteButton";
 
 const AllGames = (props) => {
   const [gamesList, setGamesList] = useState([]);
@@ -18,22 +20,22 @@ const AllGames = (props) => {
       });
   }, []);
 
-  const deleteGame = (idFromBelow) => {
-    axios
-      .delete(`http://localhost:8000/api/games/${idFromBelow}`)
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        setGamesList(
-          gamesList.filter((game, index) => game._id !== idFromBelow)
-        );
-      })
-      .catch((err) => console.log(err));
-  };
+  // const deleteGame = (idFromBelow) => {
+  //   axios
+  //     .delete(`http://localhost:8000/api/games/${idFromBelow}`)
+  //     .then((res) => {
+  //       console.log(res);
+  //       console.log(res.data);
+  //       setGamesList(
+  //         gamesList.filter((game, index) => game._id !== idFromBelow)
+  //       );
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
   return (
     <div>
-      <header>
+      {/* <header>
         <h1
           style={{
             fontSize: "50px",
@@ -46,7 +48,9 @@ const AllGames = (props) => {
           Gamemon
         </h1>
         <Link to="/new">Add a New Game</Link>
-      </header>
+      </header> */}
+
+      <Header link={"/new"} linkText={"Add a New Game"} titleText={"Gamemon"} />
       {gamesList.map((game, index) => {
         return (
           <div key={index}>
@@ -59,7 +63,13 @@ const AllGames = (props) => {
               />
             </Link>
             <Link to={`/game/edit/${game._id}`}>Edit</Link>
-            <button onClick={() => deleteGame(game._id)}>Delete</button>
+            {/* <button onClick={() => deleteGame(game._id)}>Delete</button> */}
+
+            <DeleteButton
+              id={game._id}
+              setGamesList={setGamesList}
+              gamesList={gamesList}
+            />
           </div>
         );
       })}

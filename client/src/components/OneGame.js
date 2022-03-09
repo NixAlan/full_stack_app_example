@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, navigate } from "@reach/router";
+import Header from "./Header";
+import DeleteButton from "./DeleteButton";
 
 const OneGame = (props) => {
   const { id } = props;
@@ -32,7 +34,7 @@ const OneGame = (props) => {
 
   return (
     <div>
-      <header>
+      {/* <header>
         <h1
           style={{
             fontSize: "50px",
@@ -45,7 +47,8 @@ const OneGame = (props) => {
           {game.name}
         </h1>
         <Link to={"/"}>Return to home</Link>
-      </header>
+      </header> */}
+      <Header link={"/"} linkText={"Return Home"} titleText={game.name} />
       <img
         src={game.image}
         alt="game"
@@ -55,7 +58,8 @@ const OneGame = (props) => {
       <p>{game.yearReleased}</p>
       <p>{game.rating}</p>
       <p>{game.company}</p>
-      <button onClick={deleteGame}>Delete {game.name}</button>
+      <DeleteButton id={game._id} />
+      {/* <button onClick={deleteGame}>Delete {game.name}</button> */}
     </div>
   );
 };
