@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 
-const dbName = "gamesDB";
-
 mongoose
-  .connect(`mongodb://localhost/${dbName}`, {
+  .connect(`mongodb://localhost/${process.env.DB_NAME}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log(`you are connected to the database ${dbName}`);
+    console.log(`you are connected to the database ${process.env.DB_NAME}`);
   })
   .catch((err) => {
-    console.log(`you are not connected to the database ${dbName}`, err);
+    console.log(
+      `you are not connected to the database ${process.env.DB_NAME}`,
+      err
+    );
   });
