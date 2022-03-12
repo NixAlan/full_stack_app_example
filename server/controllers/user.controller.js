@@ -97,15 +97,34 @@ module.exports = {
     });
   },
 
-  getOneUser: (req, res) => {
-    User.findOne({ _id: req.params.id })
-      .then((oneUser) => {
-        console.log(oneUser);
-        res.json(oneUser);
+  getLoggedInUser: (req, res) => {
+    console.log("devlog1", req.jwtpayload);
+    User.findOne({ _id: req.jwtpayload.id })
+      .then((user) => res.json(user))
+      .catch((err) => res.json(err));
+  },
+
+  //   getOneUser: (req, res) => {
+  //     User.findOne({ _id: req.params.id })
+  //       .then((oneUser) => {
+  //         console.log(oneUser);
+  //         res.json(oneUser);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //         res.status(400).json(err);
+  //       });
+  //   },
+
+  findAllUsers: (req, res) => {
+    User.find()
+      .then((allUsers) => {
+        console.log(allUsers);
+        res.json(allUsers);
       })
       .catch((err) => {
-        console.log(err);
-        res.status(400).json(err);
+        console.log("Find All Users Failed");
+        res.json({ message: "something went wrong in findAll", error: err });
       });
   },
 };

@@ -25,11 +25,13 @@ const NewGame = (props) => {
     e.preventDefault();
 
     axios
-      .post("http://localhost:8000/api/games", newGame)
+      .post("http://localhost:8000/api/games", newGame, {
+        withCredentials: true,
+      })
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        navigate("/");
+        navigate("/home");
       })
       .catch((err) => {
         console.log(err);

@@ -1,8 +1,12 @@
 const Game = require("../models/game.model");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user.model");
+const gameRoutes = require("../routes/game.routes");
 
 module.exports = {
   findAllGames: (req, res) => {
     Game.find()
+      .populate("createdBy", "username email")
       .then((allGames) => {
         console.log(allGames);
         res.json(allGames);
@@ -14,7 +18,20 @@ module.exports = {
   },
 
   createNewGame: (req, res) => {
-    Game.create(req.body)
+    const newGameObject = new Game(req.body);
+    //usertoken is the name of the cookie that we gave it in the user controller
+    //.
+    // const decodedJWT = jwt.decode(req.cookies.userToken, {
+    //   complete: true,
+    // });
+
+    newGameObject.createdBy = req.jwtpayload.id;
+
+    console.log(`devlog `, newGameObject.createdBy);
+    // newGameObject.createdBy = decodedJWT.payload.id;
+
+    newGameObject
+      .save()
       .then((newGame) => {
         console.log(newGame);
         res.json(newGame);
@@ -64,5 +81,38 @@ module.exports = {
         console.log("something went wrong in updating Game");
         res.status(400).json(err);
       });
+  },
+
+  findAllGamesByUser: (req, res) => {
+    if (req.jwtpayload.username !== req.params.username) {
+      User.findOne({ username: req.params.username })
+        .then((userNotLoggedIn) => {
+          Game.find({ createdBy: userNotLoggedIn._id })
+            .populate("createdBy", "username")
+            .then((allGamesFromUser) => {
+              console.log(allGamesFromUser);
+              res.json(allGamesFromUser);
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(400).json(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(400).json(err);
+        });
+    } else {
+      Game.find({ createdBy: req.jwtpayload.id })
+        .populate("createdBy", "username")
+        .then((allGamesFromLoggedInUser) => {
+          console.log(allGamesFromLoggedInUser);
+          res.json(allGamesFromLoggedInUser);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(400).json(err);
+        });
+    }
   },
 };

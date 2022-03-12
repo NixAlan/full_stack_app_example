@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "@reach/router";
+import { Link, navigate } from "@reach/router";
 import Header from "./Header";
 import DeleteButton from "./DeleteButton";
 
 const AllGames = (props) => {
   const [gamesList, setGamesList] = useState([]);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     axios
@@ -33,6 +34,37 @@ const AllGames = (props) => {
   //     .catch((err) => console.log(err));
   // };
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/users/secure", { withCredentials: true })
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setUser(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const logout = (e) => {
+    axios
+      .post(
+        "http://localhost:8000/api/users/logout",
+        {}, // As a post request, we must send smething with our request.
+        // because we're not adding anything, we can send a simple MT object
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       {/* <header>
@@ -51,9 +83,15 @@ const AllGames = (props) => {
       </header> */}
 
       <Header link={"/new"} linkText={"Add a New Game"} titleText={"Gamemon"} />
+      <Link to={`/user/profile/${user.username}`}>{user.username} Profile</Link>
+      <button onClick={logout}>Log Out</button>
       {gamesList.map((game, index) => {
         return (
-          <div key={index}>
+          <div className="gameContainer" key={index}>
+            <Link to={`/user/profile/${game.createdBy.username}`}>
+              Created By:{game.createdBy.username}
+            </Link>
+
             <Link to={`/game/${game._id}`}>
               <p>{game.name}</p>
               <img

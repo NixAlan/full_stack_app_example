@@ -45,6 +45,11 @@ const GameSchema = new mongoose.Schema(
     company: {
       type: String,
     },
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // must match the other Models output name
+    },
   },
   { timestamps: true }
 );
